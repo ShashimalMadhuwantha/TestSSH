@@ -72,4 +72,19 @@ public abstract class ChessPiece {
      * @return True if the move is valid, false otherwise.
      */
     public abstract boolean isValidMove(int targetRow, int targetCol);
+
+    /**
+     * Abstract method to be implemented by specific piece types.
+     * Gets the symbol of the piece (e.g., "♙", "♘").
+     *
+     * @return The symbol of the piece.
+     */
+    public abstract String getSymbol();
+
+    public String getImagePath() {
+        // Default behavior can be overridden in subclasses like Queen, Rook, etc.
+        String color = isWhite() ? "white" : "black";
+        String className = this.getClass().getSimpleName().toLowerCase();
+        return "/images/" + color + "_" + className + ".png"; // Assuming image naming follows a pattern
+    }
 }

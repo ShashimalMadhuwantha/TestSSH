@@ -1,49 +1,59 @@
 package gui;
 
+import game.ChessGame;
+import game.GameStatus;
+import game.ChessPiece;
+import utils.ImageLoader;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class ChessGUI {
-    private JFrame frame; // Main window frame
-    private JPanel boardPanel; // Panel for the chessboard
-    private JPanel mainPanel; // Panel for the board and labels
+    private JFrame frame;
+    private JPanel boardPanel;
+    private JPanel mainPanel;
+    private ChessGame game;
+    private JLabel statusLabel;
 
-    public ChessGUI() {
+    public ChessGUI(ChessGame game) {
+        this.game = game;
+
         // Initialize the main frame
         frame = new JFrame("Chess Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Set fullscreen mode
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setUndecorated(true);
-
+        // Set a fixed window size
+        frame.setSize(800, 850);
 
         // Create the main panel
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
+        mainPanel.setLayout(new BorderLayout());
         mainPanel.setBackground(Color.DARK_GRAY);
 
-        // Create the board container (fixed size)
-        JPanel boardContainer = new JPanel(new BorderLayout());
-        boardContainer.setPreferredSize(new Dimension(850, 850)); // Include space for labels
-        boardContainer.setBackground(Color.DARK_GRAY);
-
-        // Create the chessboard panel
+        // Create the chessboard panel with 8x8 grid layout
         boardPanel = new JPanel(new GridLayout(8, 8));
-        boardPanel.setPreferredSize(new Dimension(800, 800)); // Fixed board size
-        initializeBoard();
+        boardPanel.setPreferredSize(new Dimension(800, 800)); // Board size
+        initializeBoard();  // Initialize the chessboard
 
         // Add row and column labels
         JPanel rowLabels = createRowLabels();
         JPanel colLabels = createColLabels();
 
-        // Add labels and board to the container
+        // Add the chessboard and labels to the container
+        JPanel boardContainer = new JPanel(new BorderLayout());
+        boardContainer.setPreferredSize(new Dimension(800, 800));
         boardContainer.add(boardPanel, BorderLayout.CENTER);
         boardContainer.add(rowLabels, BorderLayout.WEST);
         boardContainer.add(colLabels, BorderLayout.NORTH);
 
         // Add the board container to the main panel
-        mainPanel.add(boardContainer);
+        mainPanel.add(boardContainer, BorderLayout.CENTER);
+
+        // Add the status label at the bottom to display game status
+        statusLabel = new JLabel("Game Status: " + game.getGameStatus(), SwingConstants.CENTER);
+        statusLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        statusLabel.setForeground(Color.WHITE);
+        mainPanel.add(statusLabel, BorderLayout.SOUTH);
 
         // Add main panel to the frame
         frame.add(mainPanel);
@@ -59,17 +69,24 @@ public class ChessGUI {
                 JButton square = new JButton();
                 square.setPreferredSize(new Dimension(100, 100));
 
-                // Alternate colors for squares
+                // Alternate colors for the squares
                 if (isWhite) {
                     square.setBackground(Color.WHITE);
                 } else {
-                    square.setBackground(Color.GRAY);
+                    square.setBackground(Color.DARK_GRAY);
+                }
+
+                // Get the piece at this position and render it
+                ChessPiece piece = game.getPieceAt(row, col);
+                if (piece != null) {
+                    Image img = ImageLoader.loadImage(piece.getImagePath());
+                    square.setIcon(new ImageIcon(img));
                 }
 
                 boardPanel.add(square);
-                isWhite = !isWhite; // Switch color
+                isWhite = !isWhite; // Alternate square color
             }
-            isWhite = !isWhite; // Switch starting color for next row
+            isWhite = !isWhite; // Alternate starting color for the next row
         }
     }
 
@@ -104,7 +121,7 @@ public class ChessGUI {
         return colLabels;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(ChessGUI::new);
+    public void updateGameStatus(GameStatus gameStatus) {
+        statusLabel.setText("Game Status: " + gameStatus);
     }
 }

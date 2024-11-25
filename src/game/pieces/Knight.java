@@ -2,9 +2,9 @@ package game.pieces;
 
 import game.ChessPiece;
 
-public class Queen extends ChessPiece {
+public class Knight extends ChessPiece {
 
-    public Queen(boolean isWhite, int row, int col) {
+    public Knight(boolean isWhite, int row, int col) {
         super(isWhite, row, col);
     }
 
@@ -16,20 +16,17 @@ public class Queen extends ChessPiece {
         int rowDiff = Math.abs(targetRow - currentRow);
         int colDiff = Math.abs(targetCol - currentCol);
 
-        boolean isStraightLine = (currentRow == targetRow || currentCol == targetCol);
-        boolean isDiagonal = (rowDiff == colDiff);
-
-        return isStraightLine || isDiagonal;
+        return (rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2);
     }
 
     @Override
     public String getSymbol() {
-        return isWhite() ? "♕" : "♛";  // White Queen is ♕, black Queen is ♛
+        return isWhite() ? "♘" : "♞";  // White Knight is ♘, black Knight is ♞
     }
 
     @Override
     public String getImagePath() {
         // Override this method to return the image path for the Queen piece
-        return isWhite() ? "assets/images/whitequeen.png" : "assets/images/blackqueen.png";
+        return isWhite() ? "assets/images/whiteknight.png" : "assets/images/blackknight.png";
     }
 }
