@@ -17,6 +17,7 @@ public class Bishop extends ChessPiece {
      */
     public Bishop(boolean isWhite, int row, int col) {
         super(isWhite, row, col);
+
     }
 
     /**
